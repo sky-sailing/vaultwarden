@@ -186,9 +186,12 @@ impl Client {
                 };
 
                 if CONFIG.sso_debug_tokens() {
-                    debug!("Id token: {}", id_token.to_string());
-                    debug!("Access token: {}", token_response.access_token().secret());
-                    debug!("Refresh token: {:?}", token_response.refresh_token().map(|t| t.secret()));
+                    debug!("Id token: [REDACTED ({} chars)]", id_token.to_string().len());
+                    debug!("Access token: [REDACTED ({} chars)]", token_response.access_token().secret().len());
+                    debug!(
+                        "Refresh token: {:?}",
+                        token_response.refresh_token().map(|t| format!("[REDACTED ({} chars)]", t.secret().len()))
+                    );
                     debug!("Expiration time: {:?}", token_response.expires_in());
                 }
 

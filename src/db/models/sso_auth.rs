@@ -27,7 +27,7 @@ pub enum OIDCCodeWrapper {
 
 impl_FromToSqlText!(OIDCCodeWrapper);
 
-#[derive(AsExpression, Clone, Debug, Serialize, Deserialize, FromSqlRow)]
+#[derive(AsExpression, Clone, Serialize, Deserialize, FromSqlRow)]
 #[diesel(sql_type = Text)]
 pub struct OIDCAuthenticatedUser {
     pub refresh_token: Option<String>,
@@ -37,6 +37,20 @@ pub struct OIDCAuthenticatedUser {
     pub email: String,
     pub email_verified: Option<bool>,
     pub user_name: Option<String>,
+}
+
+impl std::fmt::Debug for OIDCAuthenticatedUser {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("OIDCAuthenticatedUser")
+            .field("refresh_token", &self.refresh_token.as_ref().map(|t| format!("[REDACTED ({} chars)]", t.len())))
+            .field("access_token", &format!("[REDACTED ({} chars)]", self.access_token.len()))
+            .field("expires_in", &self.expires_in)
+            .field("identifier", &self.identifier)
+            .field("email", &self.email)
+            .field("email_verified", &self.email_verified)
+            .field("user_name", &self.user_name)
+            .finish()
+    }
 }
 
 impl_FromToSqlText!(OIDCAuthenticatedUser);
